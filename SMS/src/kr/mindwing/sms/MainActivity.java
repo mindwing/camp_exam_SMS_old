@@ -21,6 +21,9 @@ public class MainActivity extends Activity {
 	private static final String ACTION_DELIVERY = "delivery";
 	private static final String ACTION_SENT = "sent";
 
+	private static final int CODE_DELIVERY = 1001;
+	private static final int CODE_SENT = 1002;
+
 	private TextView tel;
 	private TextView body;
 	private Button sendButton;
@@ -58,12 +61,17 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				SmsManager manager = SmsManager.getDefault();
+
+				PendingIntent piSent = PendingIntent.getBroadcast(
+						MainActivity.this, CODE_SENT, new Intent(ACTION_SENT),
+						PendingIntent.FLAG_ONE_SHOT);
+
+				PendingIntent piDelivery = PendingIntent.getBroadcast(
+						MainActivity.this, CODE_DELIVERY, new Intent(
+								ACTION_DELIVERY), PendingIntent.FLAG_ONE_SHOT);
+
 				manager.sendTextMessage(tel.getText().toString(), null, body
-						.getText().toString(), PendingIntent.getBroadcast(
-						MainActivity.this, 2501, new Intent(ACTION_SENT),
-						PendingIntent.FLAG_ONE_SHOT), PendingIntent
-						.getBroadcast(MainActivity.this, 2502, new Intent(
-								ACTION_DELIVERY), PendingIntent.FLAG_ONE_SHOT));
+						.getText().toString(), piSent, piDelivery);
 			}
 		});
 
